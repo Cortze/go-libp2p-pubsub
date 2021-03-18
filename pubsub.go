@@ -200,7 +200,7 @@ func (m *Message) GetFrom() peer.ID {
 }
 
 func (m *Message) GetArrivalTime() time.Time {
-	return m.ReceivedFrom
+	return m.ArrivalTime
 }
 
 func (m *Message) GetMessageID() string {
@@ -966,7 +966,7 @@ func (p *PubSub) handleIncomingRPC(rpc *RPC) {
 		}
 
 		id := p.msgID(pmsg)
-		msg := &Message{pmsg, rpc.from, rcp.ArrivalTime, id, nil}
+		msg := &Message{pmsg, rpc.from, rpc.ArrivalTime, id, nil}
 		p.pushMsg(msg)
 	}
 
