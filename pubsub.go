@@ -186,6 +186,8 @@ type PubSubRouter interface {
 type Message struct {
 	*pb.Message
 	ReceivedFrom  peer.ID
+	ArrivalTime   time.Time
+	MessageID     string
 	ValidatorData interface{}
 }
 
@@ -193,11 +195,23 @@ func (m *Message) GetFrom() peer.ID {
 	return peer.ID(m.Message.GetFrom())
 }
 
+func (m *Message) GetArrivalTime() time.Time {
+	return m.ReceivedFrom
+}
+
+func (m *Message) GetMessageID() string {
+	return m.MessageID
+}
+
 type RPC struct {
 	pb.RPC
 
 	// unexported on purpose, not sending this over the wire
 	from peer.ID
+
+	// MODIFICATION -
+	// Include the Timestamp where the msg was received
+	arrivalTime time.Time
 }
 
 type Option func(*PubSub) error
@@ -934,7 +948,8 @@ func (p *PubSub) handleIncomingRPC(rpc *RPC) {
 			continue
 		}
 
-		msg := &Message{pmsg, rpc.from, nil}
+		id := p.msgID(pmsg)
+		msg := &Message{pmsg, rpc.from, rcp.ArrivalTime, id, nil}
 		p.pushMsg(msg)
 	}
 
