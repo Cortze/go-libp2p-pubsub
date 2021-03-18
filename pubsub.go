@@ -966,7 +966,7 @@ func (p *PubSub) handleIncomingRPC(rpc *RPC) {
 		}
 
 		id := p.msgID(pmsg)
-		msg := &Message{pmsg, rpc.from, rpc.ArrivalTime, id, nil}
+		msg := &Message{pmsg, rpc.from, rpc.arrivalTime, id, nil}
 		p.pushMsg(msg)
 	}
 
